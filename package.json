@@ -3,14 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start" : "vue-cli-service build;node server.js;",
+    "start": "vue-cli-service build;node server.js;",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "express": "^4.16.4",
-    "vue": "^2.5.17"
+    "vue": "^2.5.17",
+    "vue-cli": "^2.9.6"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.5",
