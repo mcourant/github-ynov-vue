@@ -2,12 +2,14 @@
         "id": 1,
         "firstname": "Maxime",
         "lastname": "COURANT",
+        "github" : "mcourant",
         "selected": true
     },
     {
         "id": 2,
         "firstname": "Matthieu",
         "lastname": "SAINT-MARTIN",
+        "github" : "msaintmartin",
         "selected": true
     }
 ]

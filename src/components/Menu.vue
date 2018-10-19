@@ -3,16 +3,19 @@
     <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
       <h5 class="my-0 mr-md-auto font-weight-normal">Github ynov vue</h5>
       <nav class="my-2 my-md-0 mr-md-3">
-        <a class="p-2 text-dark" data-toggle="modal" data-target=".modalProject" href="#">Choix projet : {{ project }}</a>
+        <a class="p-2 text-dark" data-toggle="modal" data-target=".modalProject" href="#">Choix projet : <span class="text-info">{{ project }}</span></a>
         
-        <a class="p-2 text-dark" data-toggle="modal" data-target=".modalPeriode" href="#">Choix période : {{ periode[0] }} -> {{ periode[1] }}</a>
-        <a class="p-2 text-dark" data-toggle="modal" data-target=".modalAccount" href="#">Choix compte : {{ allAccounts.length }} selected</a>
+        <a class="p-2 text-dark" data-toggle="modal" data-target=".modalPeriode" href="#">Choix période : <span class="text-info">{{ formatDate(periode[0]) }} -> {{ formatDate(periode[1]) }}</span></a>
+        <a class="p-2 text-dark" data-toggle="modal" data-target=".modalAccount" href="#">Choix compte : <span class="text-info">{{ allAccounts.length }} selected</span></a>
       </nav>
+      <a class="btn btn-outline-primary" v-on:click="getAllCommits()" href="#">Validate</a>
     </div>
     
-    <modal-account account-selected="1" @saveAccount="getAccounts"/>
-    <modal-periode/>
+    <modal-account @saveAccount="getAccounts"/>
+    <modal-periode @dateSend="getDate"/>
     <modal-project/>
+
+    
 
   </div>
 </template>
@@ -21,6 +24,8 @@
 import ModalAccount from "./ModalAccount.vue";
 import ModalPeriode from "./ModalPeriode.vue";
 import ModalProject from "./ModalProject.vue";
+import userJson from "../assets/users.json";
+import axios from "axios";
 
 export default {
   name: "Menu",
@@ -32,15 +37,60 @@ export default {
   data() {
     return {
       project: "github-ynov-vue",
-      periode: ["18-09-2017", "18-09-2018"],
-      account: "Maxime COURANT",
-      allAccounts : []
+      periode: [new Date("2018-10-10"), new Date("2018-11-20")],
+      allAccounts: userJson,
+      allCommits: []
     };
   },
-  methods:{
-    getAccounts (accounts) {
-      console.log(accounts)
-      this.allAccounts = accounts
+  methods: {
+    getAccounts(accounts) {
+      this.allAccounts = accounts;
+    },
+    getDate(date) {
+      this.periode = [];
+      this.periode.push(new Date(date.start));
+      this.periode.push(new Date(date.end));
+    },
+    formatDate: date => {
+      var monthNames = [
+        "Janvier",
+        "Février",
+        "Mars",
+        "Avril",
+        "Mai",
+        "Juin",
+        "Juillet",
+        "Aout",
+        "Septembre",
+        "Octobre",
+        "Novembre",
+        "Décembre"
+      ];
+
+      var day = date.getDate();
+      var monthIndex = date.getMonth();
+      var year = date.getFullYear();
+
+      return day + " " + monthNames[monthIndex] + " " + year;
+    },
+    getAllCommits() {
+      this.allCommits = []
+      axios.defaults.headers.common["Authorization"] =
+        "token tokenàdéfinir";
+      this.allAccounts.forEach(e => {
+        axios
+          .get("https://api.github.com/repos/" + e.github + "/" + this.project+ "/commits")
+          .then(response => {
+            
+            response.data.forEach((e) => {
+              const dateCommit = new Date(e.commit.committer.date)
+              if(dateCommit > this.periode[0] && dateCommit < this.periode[1]){
+                this.allCommits.push(e.commit)
+              }
+            })
+            this.$emit("saveCommits", this.allCommits)
+          });
+      });
     }
   }
 };

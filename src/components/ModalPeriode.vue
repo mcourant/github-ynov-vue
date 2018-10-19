@@ -4,17 +4,16 @@
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle">Choix de la periode</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-
+      <div class="modal-body " style="height:400px">
+        <date-picker i18n="EN" @selected="dateTake"></date-picker>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-primary" v-on:click="sendInfo()" data-dismiss="modal">Save changes</button>
       </div>
     </div>
   </div>
@@ -24,7 +23,23 @@
 <script>
 
 export default {
-  name: 'ModalPeriode'
+  name: 'ModalPeriode',
+  data (){
+    return {
+      dateStart : "",
+      dateEnd : ""
+    }
+  },
+  methods:{
+    dateTake(data){
+      console.log(data)
+      this.dateStart = data.start
+      this.dateEnd = data.end
+    },
+    sendInfo(){
+      this.$emit("dateSend",{"start":this.dateStart, "end":this.dateEnd})
+    }
+  }
 }
 
 </script>

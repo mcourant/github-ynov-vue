@@ -49,9 +49,6 @@ export default {
       listAccount: []
     }
   },
-  props:[
-    'accountSelected'
-  ],
   methods:{
     selectedAccount (account) {
       this.listAccount.find(item => item.id === account.id).selected = true
