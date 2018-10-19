@@ -76,7 +76,7 @@ export default {
     getAllCommits() {
       this.allCommits = []
       axios.defaults.headers.common["Authorization"] =
-        "token tokenàdéfinir";
+        "token 0cf95d3d17d2de5c52d1124967605f52e14485a5";
       this.allAccounts.forEach(e => {
         axios
           .get("https://api.github.com/repos/" + e.github + "/" + this.project+ "/commits")
