@@ -1,5 +1,5 @@
 <template>
-<div v-bind:class="{hide : isActive}" class="modal fade bd-example-modal-lg modalAccount" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div  class="modal fade bd-example-modal-lg modalAccount" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -22,12 +22,15 @@
               <td scope="row">{{ account.firstname }}</td>
               <td>{{ account.lastname }}</td>
               <td>
-                <button type="button" v-if="account.selected" disabled class="btn btn-success btn-sm">Selected</button>
-                <button type="button" v-else v-on:click="selectedAccount(account)" data-dismiss="close" class="btn btn-warning btn-sm">Select</button>
+                <button type="button" v-if="account.selected" v-on:click="unselectedAccount(account)" class="btn btn-danger btn-sm">Unselected</button>
+                <button type="button" v-else v-on:click="selectedAccount(account)" class="btn btn-success btn-sm">Select</button>
               </td>
             </tr>
           </tbody>
         </table> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" v-on:click="saveInfo()" data-dismiss="modal">Save</button>
       </div>
       
     </div>
@@ -36,12 +39,14 @@
 </template>
 
 <script>
+
+import userJson from "../assets/users.json"
+
 export default {
   name: "ModalAccount",
   data (){
     return {
-      listAccount: [],
-      isActive: false
+      listAccount: []
     }
   },
   props:[
@@ -49,23 +54,24 @@ export default {
   ],
   methods:{
     selectedAccount (account) {
-      this.isActive = true
-      this.$emit('selected', account)
+      this.listAccount.find(item => item.id === account.id).selected = true
+    },
+    unselectedAccount (account) {
+      this.listAccount.find(item => item.id === account.id).selected = false
+    },
+    saveInfo(){
+      const tmpListAccount = []
+      this.listAccount.forEach((e)=>{
+          if(e.selected){
+            tmpListAccount.push(e)
+          }
+      })
+      this.$emit("saveAccount", tmpListAccount)
     }
+    
   },
   created () {
-    this.listAccount.push({
-      "id" : 1,
-      "firstname" : "Maxime",
-      "lastname" : "COURANT",
-      "selected" : true
-    })
-    this.listAccount.push({
-      "id" : 2,
-      "firstname" : "Matthieu",
-      "lastname" : "SAINT-MARTIN",
-      "selected" : false
-    })
+    this.listAccount = userJson
   }
 };
 </script>

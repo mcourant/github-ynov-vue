@@ -1,0 +1,13 @@
+[{
+        "id": 1,
+        "firstname": "Maxime",
+        "lastname": "COURANT",
+        "selected": true
+    },
+    {
+        "id": 2,
+        "firstname": "Matthieu",
+        "lastname": "SAINT-MARTIN",
+        "selected": true
+    }
+]
