@@ -10,7 +10,14 @@
         </button>
       </div>
       <div class="modal-body " style="height:400px">
-        <date-picker i18n="EN" @selected="dateTake"></date-picker>
+        <div class="form-group">
+          <label for="start-date">Start</label>
+          <input type="date" id="start-date" class="form-control" v-model="dateStart">
+        </div>
+        <div class="form-group">
+          <label for="end-date">End</label>
+          <input type="date" id="end-date" class="form-control" v-model="dateEnd">
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" v-on:click="sendInfo()" data-dismiss="modal">Save changes</button>
@@ -21,25 +28,23 @@
 </template>
 
 <script>
-
 export default {
-  name: 'ModalPeriode',
-  data (){
+  name: "ModalPeriode",
+  data() {
     return {
-      dateStart : "",
-      dateEnd : ""
-    }
+      dateStart: "",
+      dateEnd: ""
+    };
   },
-  methods:{
-    dateTake(data){
-      console.log(data)
-      this.dateStart = data.start
-      this.dateEnd = data.end
+  methods: {
+    dateTake(data) {
+      console.log(data);
+      this.dateStart = data.start;
+      this.dateEnd = data.end;
     },
-    sendInfo(){
-      this.$emit("dateSend",{"start":this.dateStart, "end":this.dateEnd})
+    sendInfo() {
+      this.$emit("dateSend", { start: this.dateStart, end: this.dateEnd });
     }
   }
-}
-
+};
 </script>

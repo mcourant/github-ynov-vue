@@ -39,7 +39,9 @@ export default {
       project: "github-ynov-vue",
       periode: [new Date("2018-10-10"), new Date("2018-11-20")],
       allAccounts: userJson,
-      allCommits: []
+      allCommits: {
+        commits: {}
+      }
     };
   },
   methods: {
@@ -74,23 +76,63 @@ export default {
       return day + " " + monthNames[monthIndex] + " " + year;
     },
     getAllCommits() {
-      this.allCommits = []
+      this.allCommits = {
+        commits: [],
+        readme: {}
+      };
       axios.defaults.headers.common["Authorization"] =
         "token 0cf95d3d17d2de5c52d1124967605f52e14485a5";
       this.allAccounts.forEach(e => {
+        let commitsUser = {
+          name: e.github,
+          allName : e.firstname +" "+ e.lastname,
+          commits: [],
+          readme : ""
+        };
         axios
-          .get("https://api.github.com/repos/" + e.github + "/" + this.project+ "/commits")
+          .get(
+            "https://api.github.com/repos/" +
+              e.github +
+              "/" +
+              this.project +
+              "/commits"
+          )
           .then(response => {
-            
-            response.data.forEach((e) => {
-              const dateCommit = new Date(e.commit.committer.date)
-              if(dateCommit > this.periode[0] && dateCommit < this.periode[1]){
-                this.allCommits.push(e.commit)
+            response.data.forEach(e => {
+              const dateCommit = new Date(e.commit.committer.date);
+              if (
+                dateCommit > this.periode[0] &&
+                dateCommit < this.periode[1]
+              ) {
+                commitsUser.commits.push(e.commit)
               }
-            })
-            this.$emit("saveCommits", this.allCommits)
+            });
+            axios({
+              method: "GET",
+              url:
+                "https://api.github.com/repos/" +
+                e.github +
+                "/" +
+                this.project +
+                "/readme"
+            }).then(res => {
+              commitsUser.readme = this.b64DecodeUnicode(res.data.content).replace(/(?:\r\n|\r|\n)/g, '</br>');
+            });
+            this.allCommits.commits.push(commitsUser)
+            
+            console.log(this.allCommits);
+            this.$emit("saveCommits", this.allCommits);
           });
       });
+    },
+    b64DecodeUnicode: str => {
+      return decodeURIComponent(
+        Array.prototype.map
+          .call(atob(str), function(c) {
+            return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join("")
+      );
     }
   }
 };
