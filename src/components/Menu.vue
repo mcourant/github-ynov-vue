@@ -81,7 +81,7 @@ export default {
         readme: {}
       };
       axios.defaults.headers.common["Authorization"] =
-        "token ee85a54e57384d492598518053b9cc1bc663c075";
+        "token votretoken";
       this.allAccounts.forEach(e => {
         let commitsUser = {
           name: e.github,
